@@ -5,7 +5,13 @@ using VendistaProject.Server.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Configuration
+ .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+ .AddJsonFile($"appsettings.json", optional: false)
+ .AddJsonFile($"appsettings.Environment.json", optional: true)
+ .AddEnvironmentVariables()
+ .Build(); 
+
 builder.Services.AddRazorPages();
 var services = builder.Services;
 var app = builder.Build();

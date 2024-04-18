@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,18 @@ namespace VendistaProject.Infrastructure
 {
     public class VendistaProejctDbContext:DbContext
     {
+        public VendistaProejctDbContext() { }
         public VendistaProejctDbContext(DbContextOptions<VendistaProejctDbContext> options) 
             :base(options) { }
-        public DbSet<History> Histories { get; set; } 
+        public DbSet<History> Histories { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("DefaultConnection");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);  
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
