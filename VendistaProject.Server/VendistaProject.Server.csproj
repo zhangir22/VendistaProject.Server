@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VendistaProject.Application\VendistaProject.Application.csproj" />
+    <ProjectReference Include="..\VendistaProject.Infrastructure\VendistaProject.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

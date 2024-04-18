@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VendistaProject.Dto.Models.Interfaces
 {
-    internal interface IBaseModel
+    public interface IBaseModel
     {
     }
 }

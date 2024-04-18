@@ -16,6 +16,16 @@ namespace VendistaProject.Dto.Models
     }
     public class MultyCommand: IBaseCommandModel 
     {
+        public int command_id { get; set; }
+        public int? parameter1 { get; set; } = 0;
+        public int? parameter2 { get; set; } = 0;
+        public int? parameter3 { get; set; } = 0;
+        public int? parameter4 { get; set; } = 0;
+        public string str_parameter1 { get; set; } = "string";
+        public string str_parameter2 { get; set; } = "string";
+    }
+    public class BodyCommand:IBaseCommandModel 
+    {
         public int id { get; set; }
         public string name { get; set; }
         public string parameter_name1 { get; set; }
@@ -32,8 +42,7 @@ namespace VendistaProject.Dto.Models
         public string str_parameter_default_value2 { get; set; }
         public bool visible { get; set; }
     }
-    public class BodyCommand:IBaseCommandModel { }
-    public class Command: IBaseCommandModel:IBaseModel 
+    public class Command: IBaseCommandModel 
     {
         public int pageNumber { get; set; }
         public int itemsPerPage { get; set; }

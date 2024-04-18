@@ -11,6 +11,7 @@ namespace VendistaProject.Application.Services
     public abstract class AbstractService
     {
         protected readonly ILogger Logger;
-        protected readonly IMapper
+        protected readonly IMapper Mapper;
+
     }
 }

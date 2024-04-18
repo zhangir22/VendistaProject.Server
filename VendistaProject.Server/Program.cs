@@ -1,8 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using VendistaProject.Infrastructure;
+using VendistaProject.Server.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+var services = builder.Services;
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -13,6 +18,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -22,4 +29,8 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+
+IConfiguration configuration = builder.Configuration;
+services.AddDbContext<VendistaProejctDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString(InitializationDataBase.ConnectionString)), ServiceLifetime.Transient);
 app.Run();
