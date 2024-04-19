@@ -7,7 +7,7 @@ using VendistaProject.Dto.Models.Interfaces;
 
 namespace VendistaProject.Dto.Models
 {
-    public class History:IHistoryModel
+    public class HistoryDto:IHistoryModel
     {
         public int id { get; set; }
         public DateTime dataTime{ get; set; }

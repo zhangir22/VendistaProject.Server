@@ -14,7 +14,7 @@ namespace VendistaProject.Infrastructure
         public VendistaProejctDbContext() { }
         public VendistaProejctDbContext(DbContextOptions<VendistaProejctDbContext> options) 
             :base(options) { }
-        public DbSet<History> Histories { get; set; }
+        public DbSet<HistoryDto> Histories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

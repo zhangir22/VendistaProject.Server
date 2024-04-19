@@ -18,6 +18,10 @@ namespace VendistaProject.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<IHistoryModel>> GetAllAsync()
+        {
+            return await _context.Histories.ToListAsync();
+        }
         public async Task<IHistoryModel> CreateAsync(IHistoryModel model)
         {
             if(model != null)
