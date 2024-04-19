@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using VendistaProject.Dto.Models.Interfaces;
@@ -8,21 +11,40 @@ using VendistaProject.Infrastructure.Repositories.Interfaces;
 
 namespace VendistaProject.Infrastructure.Repositories
 {
-    public class AbstractRepoistory<T> : IAbstractRepository<T> where T : IBaseModel, IHistoryModel
+    public class AbstractRepoistory  : IAbstractRepository
     {
-        public Task<T> CreateAsync(T model)
+        private readonly VendistaProejctDbContext _context;
+        public AbstractRepoistory(VendistaProejctDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<IHistoryModel> CreateAsync(IHistoryModel model)
+        {
+            if(model != null)
+            {
+                if(await _context.Histories.FindAsync(model) == null)
+                    await _context.AddAsync(model);
+            }
+            _context.SaveChanges();
+            return _context.Histories.LastOrDefault();
         }
 
-        public Task<T> DeleteAsync(T model)
+        public async Task<IHistoryModel> DeleteAsync(IHistoryModel model)
         {
-            throw new NotImplementedException();
+            if(model != null)
+            {
+                if(await _context.Histories.FindAsync(model) != null)
+                {
+                    _context.Remove(model);
+                }
+            }
+            await _context.SaveChangesAsync();
+            return model;
         }
 
-        public Task<T?> FindAsyncById(int id)
+        public async Task<IHistoryModel?> FindAsyncById(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Histories.FirstOrDefaultAsync(h => h.id == id);
         }
     }
 }

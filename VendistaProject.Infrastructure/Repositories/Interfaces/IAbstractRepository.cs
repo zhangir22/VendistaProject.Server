@@ -7,10 +7,11 @@ using VendistaProject.Dto.Models.Interfaces;
 
 namespace VendistaProject.Infrastructure.Repositories.Interfaces
 {
-    public interface IAbstractRepository<T> where T : IBaseModel, IHistoryModel
+    public interface IAbstractRepository
     {
-        Task<T> CreateAsync(T model);
-        Task<T> DeleteAsync(T model);
-        Task<T?> FindAsyncById(int id);
+        Task<IEnumerable<IHistoryModel>> GetAllAsync();
+        Task<IHistoryModel> CreateAsync(IHistoryModel model);
+        Task<IHistoryModel> DeleteAsync(IHistoryModel model);
+        Task<IHistoryModel?> FindAsyncById(int id);
     }
 }
