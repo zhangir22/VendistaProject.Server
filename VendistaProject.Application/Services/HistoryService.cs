@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VendistaProject.Dto.Models.Interfaces;
+using VendistaProject.Infrastructure.Repositories;
 using VendistaProject.Infrastructure.Repositories.Interfaces;
 
 namespace VendistaProject.Application.Services
 {
-    public abstract class AbstractService:IAbstractRepository
+    public abstract class HistoryService:IAbstractRepository
     {
         protected readonly ILogger Logger;
         protected readonly IMapper Mapper;
         protected readonly IAbstractRepository repository;
-        public AbstractService(ILogger logger, IMapper mapper, IAbstractRepository repository)
+        public HistoryService(ILogger logger, IMapper mapper, IAbstractRepository repository)
         {
             Logger = logger;
             Mapper = mapper;
@@ -25,22 +26,25 @@ namespace VendistaProject.Application.Services
         public virtual async Task<IEnumerable<IHistoryModel>> GetAllAsync()
         {
             var models = await repository.GetAllAsync();
-
+            if(models == null)
+            {
+                Logger.LogError($"Models is null");
+            }
             return Mapper.Map<IEnumerable<IHistoryModel>>(models);
         }
-        public Task<IHistoryModel> CreateAsync(IHistoryModel model)
+        public async Task<IHistoryModel> CreateAsync(IHistoryModel model)
         {
-            return repository.CreateAsync(model);
+            return Mapper.Map<IHistoryModel>(await repository.CreateAsync(model));
         }
 
-        public Task<IHistoryModel> DeleteAsync(IHistoryModel model)
+        public async Task<IHistoryModel> DeleteAsync(IHistoryModel model)
         {
-            return repository.DeleteAsync(model);
+            return Mapper.Map<IHistoryModel>(await repository.DeleteAsync(model));
         }
 
-        public Task<IHistoryModel?> FindAsyncById(int id)
+        public async Task<IHistoryModel?> FindAsyncById(int id)
         {
-            return repository.FindAsyncById(id);
+            return Mapper.Map<IHistoryModel>(await repository.FindAsyncById(id));
         }
     }
 }
