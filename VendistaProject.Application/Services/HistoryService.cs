@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VendistaProject.Application.Services.Interfaces;
 using VendistaProject.Dto.Models.Interfaces;
 using VendistaProject.Infrastructure.Repositories;
 using VendistaProject.Infrastructure.Repositories.Interfaces;
 
 namespace VendistaProject.Application.Services
 {
-    public abstract class HistoryService:IAbstractRepository
+    public abstract class HistoryService:IHistoryService
     {
         protected readonly ILogger Logger;
         protected readonly IMapper Mapper;
