@@ -10,6 +10,9 @@ using VendistaProject.Infrastructure;
 using VendistaProject.Infrastructure.RepositoryRegistration;
 using VendistaProject.Server.Core;
 using VendistaProject.Server.Middlewares;
+using Microsoft.Extensions.Logging.Log4Net;
+using VendistaProject.Infrastructure.Repositories;
+using VendistaProject.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,38 @@ builder.Services.AddRazorPages();
 var services = builder.Services;
 builder.Services.AddAutoMapper(typeof(Program));
 
+services.AddMvcCore();
+services.AddMvc();
+services.AddRazorPages();
+
+services.AddSwaggerGen(setup =>
+{
+    // Include 'SecurityScheme' to use JWT Authentication
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+});
+
+
 services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -36,22 +71,25 @@ services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 services.AddEndpointsApiExplorer();
+
 services.AddLogging(logging =>
 {
-    logging.ClearProviders(); 
+    logging.ClearProviders();
+    logging.AddLog4Net("log4net.config");
     logging.AddConsole();
-});
+}); 
 
-services.AddMemoryCache();
-services.RegistrationDalRepository();
-services.RegistrationBllServices();
-services.RegistrationBllAutoMapper();
+services.AddMemoryCache(); 
 
 IConfiguration configuration = builder.Configuration;
 services.AddDbContext<VendistaProejctDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString(InitializationDataBase.ConnectionString)), ServiceLifetime.Transient);
 
 
+
+services.RegistrationDalRepository();
+services.RegistrationBllServices();
+services.RegistrationBllAutoMapper();
 
 
 var app = builder.Build();

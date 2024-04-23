@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VendistaProject.Application.Services;
 using VendistaProject.Application.Services.Interfaces;
+using VendistaProject.Infrastructure;
 
 namespace VendistaProject.Application.ServiecRegistration
 {
@@ -13,6 +14,7 @@ namespace VendistaProject.Application.ServiecRegistration
     {
         public static void RegistrationBllServices(this IServiceCollection services)
         { 
+            services.AddTransient<IHistoryService, HistoryService>();
             services.AddScoped<IHistoryService, HistoryService>();
         }
     }

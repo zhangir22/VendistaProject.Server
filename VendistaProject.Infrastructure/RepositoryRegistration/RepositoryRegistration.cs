@@ -13,7 +13,9 @@ namespace VendistaProject.Infrastructure.RepositoryRegistration
     {
         public static void RegistrationDalRepository(this IServiceCollection services)
         {
-            services.AddScoped<IHistoryRepository, HistoryRepository>();
+
+            services.AddTransient<IAbstractRepository, HistoryRepository>();
+            services.AddScoped<IAbstractRepository, HistoryRepository>();
         }
     }
 }

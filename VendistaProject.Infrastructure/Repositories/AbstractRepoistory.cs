@@ -13,7 +13,7 @@ namespace VendistaProject.Infrastructure.Repositories
 {
     public class AbstractRepoistory  : IAbstractRepository
     {
-        private readonly VendistaProejctDbContext _context;
+        protected readonly VendistaProejctDbContext _context;
         public AbstractRepoistory(VendistaProejctDbContext context)
         {
             _context = context;

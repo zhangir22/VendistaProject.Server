@@ -12,12 +12,12 @@ using VendistaProject.Infrastructure.Repositories.Interfaces;
 
 namespace VendistaProject.Application.Services
 {
-    public abstract class HistoryService:IHistoryService
+    public class HistoryService:IHistoryService
     {
         protected readonly ILogger Logger;
         protected readonly IMapper Mapper;
-        protected readonly IAbstractRepository repository;
-        public HistoryService(ILogger logger, IMapper mapper, IAbstractRepository repository)
+        IAbstractRepository repository { get; set; }
+        public HistoryService(ILogger<IAbstractRepository> logger, IMapper mapper, IAbstractRepository repository)
         {
             Logger = logger;
             Mapper = mapper;
@@ -33,14 +33,14 @@ namespace VendistaProject.Application.Services
             }
             return Mapper.Map<IEnumerable<IHistoryModel>>(models);
         }
-        public async Task<IHistoryModel> CreateAsync(IHistoryModel model)
+        public async Task CreateAsync(IHistoryModel model)
         {
-            return Mapper.Map<IHistoryModel>(await repository.CreateAsync(model));
+            Mapper.Map<IHistoryModel>(await repository.CreateAsync(model));
         }
 
-        public async Task<IHistoryModel> DeleteAsync(IHistoryModel model)
+        public async Task DeleteAsync(IHistoryModel model)
         {
-            return Mapper.Map<IHistoryModel>(await repository.DeleteAsync(model));
+            Mapper.Map<IHistoryModel>(await repository.DeleteAsync(model));
         }
 
         public async Task<IHistoryModel?> FindAsyncById(int id)

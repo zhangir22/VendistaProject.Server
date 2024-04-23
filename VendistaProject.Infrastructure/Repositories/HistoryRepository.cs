@@ -8,7 +8,7 @@ using VendistaProject.Infrastructure.Repositories.Interfaces;
 
 namespace VendistaProject.Infrastructure.Repositories
 {
-    public class HistoryRepository : AbstractRepoistory, IHistoryRepository
+    public class HistoryRepository : AbstractRepoistory
     {
         public HistoryRepository(VendistaProejctDbContext context) : base(context)
         {
