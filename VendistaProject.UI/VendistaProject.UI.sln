@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendistaProject.UI", "VendistaProject.UI\VendistaProject.UI.csproj", "{69D3B61C-1648-4E35-AEBA-01C34E3F626A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendistaProject.Domain", "VendistaProject.Domain\VendistaProject.Domain.csproj", "{9CFB1826-C085-4AA5-AB2E-EE17169D2740}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{69D3B61C-1648-4E35-AEBA-01C34E3F626A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69D3B61C-1648-4E35-AEBA-01C34E3F626A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69D3B61C-1648-4E35-AEBA-01C34E3F626A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CFB1826-C085-4AA5-AB2E-EE17169D2740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CFB1826-C085-4AA5-AB2E-EE17169D2740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CFB1826-C085-4AA5-AB2E-EE17169D2740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CFB1826-C085-4AA5-AB2E-EE17169D2740}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
