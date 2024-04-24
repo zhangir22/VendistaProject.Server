@@ -8,11 +8,12 @@ using VendistaProject.Application.MappingConfig;
 using VendistaProject.Application.ServiecRegistration;
 using VendistaProject.Infrastructure;
 using VendistaProject.Infrastructure.RepositoryRegistration;
-using VendistaProject.Server.Core;
-using VendistaProject.Server.Middlewares;
+using VendistaProject.Server.Core; 
 using Microsoft.Extensions.Logging.Log4Net;
 using VendistaProject.Infrastructure.Repositories;
 using VendistaProject.Application.Services;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,34 +31,24 @@ builder.Services.AddRazorPages();
 var services = builder.Services;
 builder.Services.AddAutoMapper(typeof(Program));
 
+services.AddControllers();
 services.AddMvcCore();
 services.AddMvc();
 services.AddRazorPages();
 
-services.AddSwaggerGen(setup =>
+services.AddSwaggerGen(c =>
 {
-    // Include 'SecurityScheme' to use JWT Authentication
-    var jwtSecurityScheme = new OpenApiSecurityScheme
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
-        BearerFormat = "JWT",
-        Name = "JWT Authentication",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = JwtBearerDefaults.AuthenticationScheme,
-        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
-        Reference = new OpenApiReference
+        Version = "v1",
+        Title = "Vendista API",
+        Description = "Project for Vendista", 
+        Contact = new OpenApiContact
         {
-            Id = JwtBearerDefaults.AuthenticationScheme,
-            Type = ReferenceType.SecurityScheme
-        }
-    };
-
-    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtSecurityScheme, Array.Empty<string>() }
+            Name = "Zhangir Yemishov",
+            Email = "lleenovich@gmail.com", 
+        },
+         
     });
 });
 
@@ -101,12 +92,17 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.UseRouting();
 
 app.UseAuthorization();

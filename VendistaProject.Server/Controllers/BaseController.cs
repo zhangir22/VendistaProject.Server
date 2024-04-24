@@ -11,16 +11,11 @@ namespace VendistaProject.Server.Controllers
     public class BaseController : ControllerBase
     {
         protected HttpClient _client = new HttpClient();
-        private string? __tokenPartner;
-        private string? __tokenClient;
+        protected readonly TokenInit tokens= new TokenInit();  
         public BaseController() 
         { 
         }
-        public async Task Init()
-        {
-            __tokenPartner = await TokenInit.GetToken(_client, TypeToken.Partner);
-            __tokenClient = await TokenInit.GetToken(_client, TypeToken.Client);
-        }
+ 
 
 
         #region ClientRequests
@@ -28,21 +23,21 @@ namespace VendistaProject.Server.Controllers
         [HttpPost]
         public async Task<CommandTerminal> SendCommandByClient(int idTerminal, MultyCommand multyCommand)
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + __tokenClient);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Client).Result);
             return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
         }
         [Route("api/GetTerminalsByClient")]
         [HttpGet]
         public async Task<Terminal> GetTerminalByClient()
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals?token=" + __tokenClient);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals?token=" + tokens.GetToken(_client, TypeToken.Client).Result);
             return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
         }
         [Route("api/GetCommandByClient")]
         [HttpGet]
         public async Task<Command> GetCommandByClient()
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/commands/types?token=" + __tokenClient);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/commands/types?token=" + tokens.GetToken(_client, TypeToken.Client).Result);
             return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
         }
         #endregion
@@ -52,7 +47,7 @@ namespace VendistaProject.Server.Controllers
         [HttpPost]
         public async Task<CommandTerminal> SendCommandByPartner(int idTerminal, MultyCommand multyCommand)
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + __tokenPartner);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Partner).Result);
             return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
         }
 
@@ -60,14 +55,14 @@ namespace VendistaProject.Server.Controllers
         [HttpGet]
         public async Task<Terminal> GetTerminalByPartner()
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals?token=" + __tokenPartner);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals?token=" + tokens.GetToken(_client, TypeToken.Partner).Result);
             return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
         }
         [Route("api/GetCommandByPartner")]
         [HttpGet]
         public async Task<Command> GetCommandByPartner()
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/commands/types?token=" + __tokenPartner);
+            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/commands/types?token=" +  tokens.GetToken(_client, TypeToken.Partner).Result);
             return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
         }
         #endregion
@@ -79,25 +74,34 @@ namespace VendistaProject.Server.Controllers
         Partner = 0,
         Client
     }
-    public abstract class  TokenInit
+    
+    public class Token
+    {
+        public string token { get; set; }
+    }
+    public class  TokenInit
     {
  
-        private readonly static string __logP = "user2";
-        private readonly static string __pasP = "password2";
+        private readonly string __logP = "user2";
+        private readonly string __pasP = "password2";
 
-        private readonly static string __logC = "user1";
-        private readonly static string __pasC = "password1";
-        private readonly static string __baseUrl = "http://178.57.218.210:398/token?";
-        public static async Task<string?> GetToken(HttpClient client, TypeToken type)
+        private readonly string __logC = "user1";
+        private readonly string __pasC = "password1";
+        private readonly string __baseUrl = "http://178.57.218.210:398/token?";
+        public async Task<string?> GetToken(HttpClient client, TypeToken type)
         {
+            HttpResponseMessage response;
+            Token token;
             switch (type)
             {
                 case TypeToken.Client:
-                    var result = await client.GetAsync(__baseUrl + $"login={__logC}&password={__pasC}");
-                    return await result.Content.ReadAsStringAsync();
+                    response = await client.GetAsync(__baseUrl + $"login={__logC}&password={__pasC}");
+                    token = JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
+                    return token.token;
                 case TypeToken.Partner:
-                    result = await client.GetAsync(__baseUrl + $"login={__logP}&password{__pasP}");
-                    return await result.Content.ReadAsStringAsync();
+                    response = await client.GetAsync(__baseUrl + $"login={__logP}&password={__pasP}");
+                    token = JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
+                    return token.token;
                 default:
                     return null;
             }
