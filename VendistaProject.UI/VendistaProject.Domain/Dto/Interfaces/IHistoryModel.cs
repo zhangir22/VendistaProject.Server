@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VendistaProject.Dto.Models.Interfaces
+namespace VendistaProject.Domain.Dto.Models.Interfaces
 {
     public interface IHistoryModel
     {
