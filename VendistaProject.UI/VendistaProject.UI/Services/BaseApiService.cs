@@ -1,8 +1,13 @@
 ﻿using VendistaProject.UI.Services.Interfaces;
 using VendistaProject.Domain.Dto;
+using VendistaProject.UI.Models;
+using System.Net.Http;
+using System.Threading;
+using Newtonsoft.Json;
+
 namespace VendistaProject.UI.Services
 {
-    public enum ApiTypeQuery
+    public enum ApiQueryType
     {
         GET,
         POST,
@@ -12,7 +17,7 @@ namespace VendistaProject.UI.Services
         private readonly HttpClient _client;
         public BaseApiService()
         {
-            _client = new HttpClient();
+            _client = PreparedClient();
         }
         
         public static HttpClient PreparedClient()
@@ -23,9 +28,18 @@ namespace VendistaProject.UI.Services
             HttpClient client = new HttpClient(handler);
             return client;
         } 
-        protected async Task<ResponseDto> SendQuery(string path, string queryParams = "", ApiTypeQuery queryType = ApiTypeQuery.GET)
+   
+        public async Task<Token>GetToken(string path)
         {
-            string url = $"{AppConfiguration.ApiUrl}{path}?{queryParams}";
+            HttpResponseMessage response = await _client.GetAsync(path);
+            if (response.IsSuccessStatusCode)
+            {
+                Token token = JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
+            }
         }
+    }
+    public class Token
+    {
+        public string token { get; set; }
     }
 }
