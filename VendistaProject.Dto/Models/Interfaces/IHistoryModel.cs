@@ -8,5 +8,6 @@ namespace VendistaProject.Dto.Models.Interfaces
 {
     public interface IHistoryModel
     {
+        public int id { get; set; }
     }
 }

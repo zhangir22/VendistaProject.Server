@@ -1,8 +1,11 @@
 ﻿using log4net.Appender;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using VendistaProject.Application.Services;
+using VendistaProject.Application.Services.Interfaces;
 using VendistaProject.Dto.Models;
 using VendistaProject.Infrastructure.Migrations;
+using VendistaProject.Infrastructure.Models;
 
 namespace VendistaProject.Server.Controllers
 {
@@ -12,8 +15,10 @@ namespace VendistaProject.Server.Controllers
     {
         protected HttpClient _client = new HttpClient();
         protected readonly TokenInit tokens= new TokenInit();  
-        public BaseController() 
-        { 
+        protected readonly IHistoryService historyService;
+        public BaseController(IHistoryService historyService) 
+        {
+            this.historyService = historyService;
         }
  
 
@@ -24,7 +29,18 @@ namespace VendistaProject.Server.Controllers
         public async Task<CommandTerminal> SendCommandByClient(int idTerminal, MultyCommand multyCommand)
         {
             HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Client).Result);
-            return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+            CommandTerminal commandTerminal = JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+            await historyService.CreateAsync(
+                new HistoryModel
+                {
+                    dataTime = DateTime.UtcNow,
+                    param1 = commandTerminal.parameter1.ToString(),
+                    param2 = commandTerminal.parameter2.ToString(),
+                    param3 = commandTerminal.parameter3.ToString(),
+                    status = commandTerminal.state_name
+
+                });
+            return commandTerminal;
         }
         [Route("api/GetTerminalsByClient")]
         [HttpGet]
@@ -48,7 +64,18 @@ namespace VendistaProject.Server.Controllers
         public async Task<CommandTerminal> SendCommandByPartner(int idTerminal, MultyCommand multyCommand)
         {
             HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Partner).Result);
-            return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+            CommandTerminal commandTerminal = JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+            await historyService.CreateAsync(
+              new HistoryModel
+              {
+                  dataTime = DateTime.UtcNow,
+                  param1 = commandTerminal.parameter1.ToString(),
+                  param2 = commandTerminal.parameter2.ToString(),
+                  param3 = commandTerminal.parameter3.ToString(),
+                  status = commandTerminal.state_name
+
+              });
+            return commandTerminal; 
         }
 
         [Route("api/GetTerminalsByPartner")]

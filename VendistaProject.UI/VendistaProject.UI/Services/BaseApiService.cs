@@ -4,16 +4,15 @@ using VendistaProject.UI.Models;
 using System.Net.Http;
 using System.Threading;
 using Newtonsoft.Json;
+using VendistaProject.Domain.Dto.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace VendistaProject.UI.Services
-{
-    public enum ApiQueryType
-    {
-        GET,
-        POST,
-    }
+{ 
     public class BaseApiService: IBaseApiService
     {
+        protected readonly string BaseUrl = AppConfiguration.ApiUrl;
+        private static string nameMethod = "";
         private readonly HttpClient _client;
         public BaseApiService()
         {
@@ -29,19 +28,8 @@ namespace VendistaProject.UI.Services
             return client;
         } 
    
-        public async Task<Token?>GetToken(string path)
-        {
-            HttpResponseMessage response = await _client.GetAsync(path);
-            if (response.IsSuccessStatusCode)
-            {
-                Token token = JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
-                if(string.IsNullOrEmpty(token.token))
-                {
-                    return token;
-                }
-            }
-            return null;
-        }
+        
+       
     }
     public class Token
     {

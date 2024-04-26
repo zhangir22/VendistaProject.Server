@@ -9,7 +9,7 @@ namespace VendistaProject.Infrastructure.Models
 {
     public class HistoryModel:IHistoryModel
     {
-        public int id { get; set; }
+        public int id { get; set; } 
         public DateTime dataTime { get; set; }
         public string command { get; set; }
         public string param1 { get; set; }
