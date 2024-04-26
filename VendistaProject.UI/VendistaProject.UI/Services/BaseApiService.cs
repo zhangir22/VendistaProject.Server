@@ -6,12 +6,17 @@ using System.Threading;
 using Newtonsoft.Json;
 using VendistaProject.Domain.Dto.Models;
 using Microsoft.AspNetCore.Authentication;
+using System.Text;
 
 namespace VendistaProject.UI.Services
 { 
-    public class BaseApiService: IBaseApiService
+    public enum TypeAuth
     {
-        protected readonly string BaseUrl = AppConfiguration.ApiUrl;
+        Client,
+        Partner
+    }
+    public class BaseApiService: IBaseApiService
+    { 
         private static string nameMethod = "";
         private readonly HttpClient _client;
         public BaseApiService()
@@ -26,9 +31,63 @@ namespace VendistaProject.UI.Services
 
             HttpClient client = new HttpClient(handler);
             return client;
-        } 
-   
-        
+        }
+        public async Task<CommandTerminal?>SendCommand(TypeAuth type, int idTerminal, MultyCommand command)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(command), Encoding.UTF8, "application/json");
+            switch (type)
+            {
+                case TypeAuth.Client:
+                    response = await _client.PostAsync(@$"api/SendCommandByClient/{idTerminal}/",content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+                    }
+                    return null;
+                case TypeAuth.Partner:
+                    response = await _client.PostAsync($@"api/SendCommandByClient/{idTerminal}/", content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
+                    }
+                    return null;
+                default:
+                    return null;
+            }
+        }
+        public async Task<Terminal?>GetTerminal(TypeAuth type)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            switch (type)
+            {
+                case TypeAuth.Client:
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByClient");
+                    return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
+                    case TypeAuth.Partner:
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByPartner");
+                    return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
+                    default:
+                    return null;
+            }
+        }
+        public async Task<Command?>GetCommand(TypeAuth type)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(); 
+            switch (type)
+            {
+                case TypeAuth.Client:
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByClient");
+                    return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
+                    case TypeAuth.Partner:
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByPartner");
+                    return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
+                default:
+                    return null;
+            }
+        }
+       
+
        
     }
     public class Token

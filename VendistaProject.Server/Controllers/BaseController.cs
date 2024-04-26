@@ -1,6 +1,7 @@
 ﻿using log4net.Appender;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Text;
 using VendistaProject.Application.Services;
 using VendistaProject.Application.Services.Interfaces;
 using VendistaProject.Dto.Models;
@@ -24,13 +25,15 @@ namespace VendistaProject.Server.Controllers
 
 
         #region ClientRequests
-        [Route("api/SendCommandByClient/{idTerminal}/{token}")]
+        [Route("api/SendCommandByClient/{idTerminal}/{content}")]
         [HttpPost]
-        public async Task<CommandTerminal> SendCommandByClient(int idTerminal, MultyCommand multyCommand)
-        {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Client).Result);
+        public async Task<CommandTerminal?> SendCommandByClient(int idTerminal, HttpContent content)
+        { 
+            HttpResponseMessage response = await _client.PostAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Client).Result, content);
             CommandTerminal commandTerminal = JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
-            await historyService.CreateAsync(
+            if (response.IsSuccessStatusCode)
+            {
+                await historyService.CreateAsync(
                 new HistoryModel
                 {
                     dataTime = DateTime.UtcNow,
@@ -40,7 +43,9 @@ namespace VendistaProject.Server.Controllers
                     status = commandTerminal.state_name
 
                 });
-            return commandTerminal;
+                return commandTerminal;
+            }
+            return null;
         }
         [Route("api/GetTerminalsByClient")]
         [HttpGet]
@@ -63,19 +68,24 @@ namespace VendistaProject.Server.Controllers
         [HttpPost]
         public async Task<CommandTerminal> SendCommandByPartner(int idTerminal, MultyCommand multyCommand)
         {
-            HttpResponseMessage response = await _client.GetAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Partner).Result);
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(multyCommand), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PostAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Partner).Result, content);
             CommandTerminal commandTerminal = JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
-            await historyService.CreateAsync(
-              new HistoryModel
-              {
-                  dataTime = DateTime.UtcNow,
-                  param1 = commandTerminal.parameter1.ToString(),
-                  param2 = commandTerminal.parameter2.ToString(),
-                  param3 = commandTerminal.parameter3.ToString(),
-                  status = commandTerminal.state_name
+            if (response.IsSuccessStatusCode)
+            {
+                await historyService.CreateAsync(
+                new HistoryModel
+                {
+                    dataTime = DateTime.UtcNow,
+                    param1 = commandTerminal.parameter1.ToString(),
+                    param2 = commandTerminal.parameter2.ToString(),
+                    param3 = commandTerminal.parameter3.ToString(),
+                    status = commandTerminal.state_name
 
-              });
-            return commandTerminal; 
+                });
+                return commandTerminal;
+            }
+            return null;
         }
 
         [Route("api/GetTerminalsByPartner")]
