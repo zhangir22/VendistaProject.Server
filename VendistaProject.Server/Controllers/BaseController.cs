@@ -5,6 +5,7 @@ using System.Text;
 using VendistaProject.Application.Services;
 using VendistaProject.Application.Services.Interfaces;
 using VendistaProject.Dto.Models;
+using VendistaProject.Dto.Models.Interfaces;
 using VendistaProject.Infrastructure.Migrations;
 using VendistaProject.Infrastructure.Models;
 
@@ -21,9 +22,14 @@ namespace VendistaProject.Server.Controllers
         {
             this.historyService = historyService;
         }
- 
 
 
+        [Route("api/GetHistories")]
+        [HttpGet]
+        public async Task<IEnumerable<IHistoryModel>?> GetHistories()
+        {
+            return await historyService.GetAllAsync();
+        }
         #region ClientRequests
         [Route("api/SendCommandByClient/{idTerminal}/{content}")]
         [HttpPost]

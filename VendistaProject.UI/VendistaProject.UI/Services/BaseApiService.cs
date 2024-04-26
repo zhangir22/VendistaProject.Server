@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using VendistaProject.Domain.Dto.Models;
 using Microsoft.AspNetCore.Authentication;
 using System.Text;
+using VendistaProject.Domain.Dto.Models.Interfaces;
+using System.Collections.Generic;
 
 namespace VendistaProject.UI.Services
 { 
@@ -15,15 +17,14 @@ namespace VendistaProject.UI.Services
         Client,
         Partner
     }
-    public class BaseApiService: IBaseApiService
+    public class BaseApiService : IBaseApiService
     { 
-        private static string nameMethod = "";
         private readonly HttpClient _client;
         public BaseApiService()
         {
             _client = PreparedClient();
         }
-        
+
         public static HttpClient PreparedClient()
         {
             HttpClientHandler handler = new HttpClientHandler();
@@ -32,6 +33,13 @@ namespace VendistaProject.UI.Services
             HttpClient client = new HttpClient(handler);
             return client;
         }
+        public async Task<IEnumerable<IHistoryModel>?> GetHistories()
+        {
+            HttpResponseMessage response = await _client.GetAsync(AppConfiguration.ApiUrl + $@"/api/GetHistories");
+            
+            IEnumerable<IHistoryModel> histories = JsonConvert.DeserializeObject<IEnumerable<IHistoryModel>>( await response.Content.ReadAsStringAsync());
+            return histories;
+        }
         public async Task<CommandTerminal?>SendCommand(TypeAuth type, int idTerminal, MultyCommand command)
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -39,14 +47,14 @@ namespace VendistaProject.UI.Services
             switch (type)
             {
                 case TypeAuth.Client:
-                    response = await _client.PostAsync(@$"api/SendCommandByClient/{idTerminal}/",content);
+                    response = await _client.PostAsync(AppConfiguration.ApiUrl + @$"/api/SendCommandByClient/{idTerminal}/",content);
                     if (response.IsSuccessStatusCode)
                     {
                         return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
                     }
                     return null;
                 case TypeAuth.Partner:
-                    response = await _client.PostAsync($@"api/SendCommandByClient/{idTerminal}/", content);
+                    response = await _client.PostAsync(AppConfiguration.ApiUrl + $@"/api/SendCommandByClient/{idTerminal}/", content);
                     if (response.IsSuccessStatusCode)
                     {
                         return JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
@@ -62,10 +70,10 @@ namespace VendistaProject.UI.Services
             switch (type)
             {
                 case TypeAuth.Client:
-                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByClient");
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"/api/GetTerminalsByClient");
                     return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
                     case TypeAuth.Partner:
-                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByPartner");
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"/api/GetTerminalsByPartner");
                     return JsonConvert.DeserializeObject<Terminal>(await response.Content.ReadAsStringAsync());
                     default:
                     return null;
@@ -77,10 +85,10 @@ namespace VendistaProject.UI.Services
             switch (type)
             {
                 case TypeAuth.Client:
-                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByClient");
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"/api/GetCommandByClient");
                     return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
                     case TypeAuth.Partner:
-                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"api/GetTerminalsByPartner");
+                    response = await _client.GetAsync(AppConfiguration.ApiUrl + @"/api/GetCommandByPartner");
                     return JsonConvert.DeserializeObject<Command>(await response.Content.ReadAsStringAsync());
                 default:
                     return null;

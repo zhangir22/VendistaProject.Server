@@ -18,7 +18,7 @@ namespace VendistaProject.Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("DefaultConnection");
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=db_vendista;Trusted_Connection=True");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

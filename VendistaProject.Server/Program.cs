@@ -19,9 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Configuration
- .SetBasePath(System.IO.Directory.GetCurrentDirectory())
- .AddJsonFile($"appsettings.json", optional: false)
- .AddJsonFile($"appsettings.Environment.json", optional: true)
+ .SetBasePath(System.IO.Directory.GetCurrentDirectory()) 
+ .AddJsonFile($"appsettings.Development.json", optional: true)
  .AddEnvironmentVariables()
  .Build(); 
 
@@ -30,8 +29,11 @@ builder.Services.AddRazorPages();
 
 var services = builder.Services;
 builder.Services.AddAutoMapper(typeof(Program));
-
-services.AddControllers();
+services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
+services.AddEndpointsApiExplorer(); 
 services.AddMvcCore();
 services.AddMvc();
 services.AddRazorPages();
@@ -52,15 +54,12 @@ services.AddSwaggerGen(c =>
     });
 });
 
-
+services.AddHttpContextAccessor();
 services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
-services.AddControllers().AddJsonOptions(x =>
-{
-    x.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
+ 
 services.AddEndpointsApiExplorer();
 
 services.AddLogging(logging =>
@@ -73,8 +72,9 @@ services.AddLogging(logging =>
 services.AddMemoryCache(); 
 
 IConfiguration configuration = builder.Configuration;
+string connectionString = configuration.GetConnectionString("DefaultConnection");
 services.AddDbContext<VendistaProejctDbContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString(InitializationDataBase.ConnectionString)), ServiceLifetime.Transient);
+    options.UseSqlServer(configuration.GetConnectionString(connectionString)));
 
 
 
