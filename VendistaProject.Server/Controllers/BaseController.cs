@@ -22,8 +22,18 @@ namespace VendistaProject.Server.Controllers
         {
             this.historyService = historyService;
         }
-
-
+        [Route("api/GetBodyCommandByIndexPartner/{index}")]
+        [HttpGet]
+        public async Task<string> GetBodyCommandByIndexPartner(int index)
+        {
+            return JsonConvert.SerializeObject(GetCommandByPartner().Result.items[index]);
+        }
+        [Route("api/GetBodyCommandByIndexClient/{index}")]
+        [HttpGet]
+        public async Task<string> GetBodyCommandByIndexClient(int index)
+        {
+            return JsonConvert.SerializeObject(GetCommandByClient().Result.items[index]);
+        }
         [Route("api/GetHistories")]
         [HttpGet]
         public async Task<IEnumerable<IHistoryModel>?> GetHistories()
@@ -31,7 +41,7 @@ namespace VendistaProject.Server.Controllers
             return await historyService.GetAllAsync();
         }
         #region ClientRequests
-        [Route("api/SendCommandByClient/{idTerminal}/{content}")]
+        [Route("api/SendCommandByClient/{idTerminal}")]
         [HttpPost]
         public async Task<CommandTerminal?> SendCommandByClient(int idTerminal, HttpContent content)
         { 
@@ -70,11 +80,10 @@ namespace VendistaProject.Server.Controllers
         #endregion
         #region PartnerRequests
 
-        [Route("api/SendCommandByPartner/{idTerminal}/{token}")]
+        [Route("api/SendCommandByPartner/{idTerminal}")]
         [HttpPost]
-        public async Task<CommandTerminal> SendCommandByPartner(int idTerminal, MultyCommand multyCommand)
-        {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(multyCommand), Encoding.UTF8, "application/json");
+        public async Task<CommandTerminal> SendCommandByPartner(int idTerminal, HttpContent content)
+        { 
             HttpResponseMessage response = await _client.PostAsync("http://178.57.218.210:398/terminals/" + idTerminal + "/commands?token=" + tokens.GetToken(_client, TypeToken.Partner).Result, content);
             CommandTerminal commandTerminal = JsonConvert.DeserializeObject<CommandTerminal>(await response.Content.ReadAsStringAsync());
             if (response.IsSuccessStatusCode)
