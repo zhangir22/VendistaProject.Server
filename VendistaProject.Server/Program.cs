@@ -14,6 +14,8 @@ using VendistaProject.Infrastructure.Repositories;
 using VendistaProject.Application.Services;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
+using VendistaProject.Infrastructure.Repositories.Interfaces;
+using VendistaProject.Application.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,9 +81,11 @@ services.AddDbContext<VendistaProejctDbContext>(options =>
 
 
 services.RegistrationDalRepository();
+services.AddScoped<IAbstractRepository, HistoryRepository>();
 services.RegistrationBllServices();
+services.AddScoped<IHistoryService, HistoryService>();
 services.RegistrationBllAutoMapper();
-
+services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

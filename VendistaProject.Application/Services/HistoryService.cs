@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VendistaProject.Application.Services.Interfaces;
+using VendistaProject.Dto.Models;
 using VendistaProject.Dto.Models.Interfaces;
 using VendistaProject.Infrastructure.Repositories;
 using VendistaProject.Infrastructure.Repositories.Interfaces;
@@ -33,19 +34,21 @@ namespace VendistaProject.Application.Services
             }
             return Mapper.Map<IEnumerable<IHistoryModel>>(models);
         }
-        public async Task CreateAsync(IHistoryModel model)
-        {
-            Mapper.Map<IHistoryModel>(await repository.CreateAsync(model));
+        public async Task<HistoryDto> CreateAsync(HistoryDto model)
+        { 
+            return await repository.CreateAsync(model);
         }
 
-        public async Task DeleteAsync(IHistoryModel model)
+        public async Task<IHistoryModel> DeleteAsync(int id)
         {
-            Mapper.Map<IHistoryModel>(await repository.DeleteAsync(model));
+            return Mapper.Map<IHistoryModel>(await repository.DeleteAsync(id));
         }
 
         public async Task<IHistoryModel?> FindAsyncById(int id)
         {
             return Mapper.Map<IHistoryModel>(await repository.FindAsyncById(id));
         }
+        protected virtual Task BeforeCreate(IHistoryModel model, IHistoryModel dto) => Task.CompletedTask;
+        protected virtual Task AfterCreate(IHistoryModel dto) => Task.CompletedTask;
     }
 }

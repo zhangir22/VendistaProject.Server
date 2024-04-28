@@ -9,7 +9,7 @@ using VendistaProject.Infrastructure.Models;
 
 namespace VendistaProject.Application.MappingConfig
 {
-    internal class MappingProfile:Profile
+    public class MappingProfile:Profile
     {
         public MappingProfile() 
         {

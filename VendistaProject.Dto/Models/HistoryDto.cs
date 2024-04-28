@@ -16,5 +16,6 @@ namespace VendistaProject.Dto.Models
         public string param2 { get; set; }
         public string param3 { get; set; }
         public string status { get; set; }
+
     }
 }

@@ -22,7 +22,7 @@ namespace VendistaProject.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("VendistaProject.Dto.Models.History", b =>
+            modelBuilder.Entity("VendistaProject.Dto.Models.HistoryDto", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()

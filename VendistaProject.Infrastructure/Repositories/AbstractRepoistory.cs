@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using VendistaProject.Dto.Models;
 using VendistaProject.Dto.Models.Interfaces;
 using VendistaProject.Infrastructure.Repositories.Interfaces;
 
@@ -13,7 +14,7 @@ namespace VendistaProject.Infrastructure.Repositories
 {
     public class AbstractRepoistory  : IAbstractRepository
     {
-        protected readonly VendistaProejctDbContext _context;
+        protected VendistaProejctDbContext _context;
         public AbstractRepoistory(VendistaProejctDbContext context)
         {
             _context = context;
@@ -22,26 +23,18 @@ namespace VendistaProject.Infrastructure.Repositories
         {
             return await _context.Histories.ToListAsync();
         }
-        public async Task<IHistoryModel> CreateAsync(IHistoryModel model)
+        public async Task<HistoryDto> CreateAsync(HistoryDto model)
         {
-            if(model != null)
-            {
-                if(await _context.Histories.FindAsync(model) == null)
-                    await _context.AddAsync(model);
-            }
-            _context.SaveChanges();
-            return _context.Histories.LastOrDefault();
+            _context.Histories.Add(model);
+            await  _context.SaveChangesAsync();
+            return model;
         }
 
-        public async Task<IHistoryModel> DeleteAsync(IHistoryModel model)
+        public async Task<IHistoryModel> DeleteAsync(int id)
         {
-            if(model != null)
-            {
-                if(await _context.Histories.FindAsync(model) != null)
-                {
-                    _context.Remove(model);
-                }
-            }
+            var all = await GetAllAsync();
+            var model =(HistoryDto)all.FirstOrDefault(c => c.id == id);
+            _context.Histories.Remove(model);
             await _context.SaveChangesAsync();
             return model;
         }

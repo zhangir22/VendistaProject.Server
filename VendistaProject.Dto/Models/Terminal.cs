@@ -14,6 +14,23 @@ namespace VendistaProject.Dto.Models
         public int itmes_count { get; set; }
         public BodyTerminal[] items { get; set; }
     }
+    public class TerminalResponse
+    {
+        public CommandTerminal item { get; set; }
+    }
+    public class TerminalInfo
+    {
+        public int idTerminal { get; set; }
+        public string commandName { get; set; }
+        public MultyCommand command { get; set; }
+        public TerminalInfo(int id, MultyCommand command,string commandName)
+        {
+            this.idTerminal = id;
+            this.command = command;
+            this.commandName = commandName;
+        }
+
+    }
     public class MultyCommand: IBaseCommandModel 
     {
         public int command_id { get; set; }
@@ -21,6 +38,10 @@ namespace VendistaProject.Dto.Models
         public int? parameter2 { get; set; } = 0;
         public int? parameter3 { get; set; } = 0;
         public int? parameter4 { get; set; } = 0;
+        public int? parameter5 { get; set; } = 0;
+        public int? parameter6 { get; set; } = 0;
+        public int? parameter7 { get; set; } = 0;
+        public int? parameter8 { get; set; } = 0; 
         public string str_parameter1 { get; set; } = "string";
         public string str_parameter2 { get; set; } = "string";
     }
