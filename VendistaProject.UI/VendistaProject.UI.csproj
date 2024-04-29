@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VendistaProject.Application\VendistaProject.Application.csproj" />
     <ProjectReference Include="..\VendistaProject.Dto\VendistaProject.Dto.csproj" />
     <ProjectReference Include="..\VendistaProject.Server\VendistaProject.Server.csproj" />

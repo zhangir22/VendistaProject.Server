@@ -24,25 +24,37 @@ namespace VendistaProject.UI.Controllers
                 model.bodyCommand = model.command.items[int.Parse(value)];
             return View(model);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> SendDataDB(string userIdTerminals, string lastcommand, string? param1, string? param2, string? param3)
+        public IActionResult Error(string error)
         {
-            builder = new Builder(service);
-            var command = builder.BuildMultyCommand(
-                service.GetCommand(Services.TypeAuth.Partner).Result.items.FirstOrDefault(name => name.name == lastcommand).id,
-                param1, param2, param3);
-
-            var result =
-                await service.SendCommand(
-                Services.TypeAuth.Partner,
-                int.Parse(userIdTerminals),
-                command,
-                lastcommand
-                );
-            if (result != null)
+            return View(error);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendDataDB(string userIdTerminals, string? lastcommand, string? param1, string? param2, string? param3)
+        {
+            try
             {
-                return RedirectToAction("Index");
+                if(lastcommand == null)
+                    lastcommand = model.command.items[0].name;
+                builder = new Builder(service);
+                var command = builder.BuildMultyCommand(
+                    service.GetCommand(Services.TypeAuth.Partner).Result.items.FirstOrDefault(name => name.name == lastcommand).id,
+                    param1, param2, param3);
+
+                var result =
+                    await service.SendCommand(
+                    Services.TypeAuth.Partner,
+                    int.Parse(userIdTerminals),
+                    command,
+                    lastcommand
+                    );
+                if (result != null)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error");
             }
             return RedirectToAction("Error");
         }
