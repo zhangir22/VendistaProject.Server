@@ -21,7 +21,7 @@ namespace VendistaProject.UI.Controllers
         public IActionResult Index(string? value = null)
         {
             if (value != null)
-                model.bodyCommand = model.command.items[int.Parse(value) - 1];
+                model.bodyCommand = model.command.items[int.Parse(value)];
             return View(model);
         }
 
@@ -68,13 +68,15 @@ namespace VendistaProject.UI.Controllers
         public List<SelectListItem> GetDropList()
         {
             var list = new List<SelectListItem>();
+            int index = 0;
             foreach (var item in command.items)
             {
                 list.Add(new SelectListItem
                 {
                     Text = item.name,
-                    Value = item.id.ToString()
+                    Value = index.ToString()
                 });
+                index++;
             }
             return list;
         }
