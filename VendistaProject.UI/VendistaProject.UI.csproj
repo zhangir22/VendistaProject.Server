@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\VendistaProject.Application\VendistaProject.Application.csproj" />
     <ProjectReference Include="..\VendistaProject.Dto\VendistaProject.Dto.csproj" />
-    <ProjectReference Include="..\VendistaProject.Server\VendistaProject.Server.csproj" />
   </ItemGroup>
 
 </Project>
