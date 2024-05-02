@@ -12,6 +12,7 @@
 }
 .table-container {
     max-height: 400px;
+    height:270px;
     overflow-y: auto;
 }
 
