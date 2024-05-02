@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/style.css"/>
-    <link rel="stylesheet" href="~/css/content-style.css" />
+    <link rel="stylesheet" href="~/css/content.css" />
+    <link rel="stylesheet" href="~/css/table-style.css"/>
 </head>
 <body>
     <header>
@@ -123,129 +124,7 @@
             </tbody>
         </table>
     </div>
-@*     <div id="main">
- *@        
-      @*   <div id="container" class="navbar navbar-inverse navbar-fixed-top" style="background-color: #373737;">
-            <img class="icons" id="logo-img" src="https://p.vendista.ru/images/logo_header_2_2x.png" alt="Alternate Text" />
-            <p>Личный кабинет - Отправка команд на терминал</p>
-            <a href="#" id="profile">
-                <img class="icons" id="user-img" src="https://p.vendista.ru/images/user.svg" alt="Alternate Text" />
-            </a>
-            <a href="#"><img id="exit" class="icons" src="@Url.Content("/icons/exit.png")" alt="Alternate Text" /></a>
-        </div>
-        <div id="body-main">
-            <div class="sidenav">
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/customers.png")" alt="Alternate Text" />Клиенты</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/users.png")" />Пользователи</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/terminal.png")" />Терминалы</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/bank.png")" />TID Банка</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/transition.png")" />Транзакции</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/log_terminals.png")" />Логи терминалов</a>
-                <a href="#"><img class="icon-bar menu-icons" src="@Url.Content("/icons/cash.png")" />Кассы</a>
-                <br />
-                <a href="#">
-                    <img class="icon-bar menu-icons" src="@Url.Content("/icons/customers.png")" alt="Alternate Text" />
-                    <img class="icon-bar menu-icons" src="@Url.Content("/icons/log_terminals.png")" alt="Alternate Text" /> Привязать терминалы к клиенту списком
-                </a>
-            </div>
-            <br />
-            <div id="command-container">
-                <h3>Отправка команд на терминал</h3>
-                <div id="body-data">
-                    
-                    @using (Html.BeginForm("Index", "UI", FormMethod.Get))
-                    {
-                        <div id="commands">
-                            <label>Команда</label><br />
-                            <select id="value" , name="value" onchange="this.form.submit()">
-                                @foreach (var item in lst)
-                                { 
-                                    <option value="@item.Value">@item.Text</option>
-
-                                }
-                            </select>
-                        </div>
-                    }
-                    @using (Html.BeginForm("SendDataDB", "UI", FormMethod.Post))
-                    {
-                        <div id="data-terminals">
-                            <div id="id-terminals">
-                                <label>ID Терминала(ов)</label><br />
-                                <textarea id="user-id-terminals" name="userIdTerminals">129</textarea>
-                            </div>
-                        </div>
-                        <div id="inputs-data">
-                            
-                             @if (Model.bodyCommand != null)
-                            {
-                                <input id="lastcommand" name="lastcommand" value="@Model.bodyCommand.name" type="text" style="position:absolute; display:none" />
-
-                                if (Model.bodyCommand.parameter_name1 != null)
-                                {
-                                    @Html.Label(Model.bodyCommand.parameter_name1)
-                                    ;
-                                    <input name="param1" , id="param1" , placeholder="@Model.bodyCommand.parameter_default_value1",  type="text" />
-
-                                    <br />
-                                }
-                                if (Model.bodyCommand.parameter_name2 != null)
-                                {
-                                    @Html.Label(Model.bodyCommand.parameter_name2)
-                                    ;
-                                    <input name="param2" , id="param2" , placeholder="@Model.bodyCommand.parameter_default_value2", type="text" />
-
-                                    <br />
-                                }
-                                if (Model.bodyCommand.parameter_name3 != null)
-                                {
-                                    @Html.Label(Model.bodyCommand.parameter_name3)
-                                    ;
-                                    <input name="param3" , id="param3" , placeholder="@Model.bodyCommand.parameter_default_value3", type="text" />
-
-                                    <br />
-                                }
-                             
-
-
-                            }    
-                        </div>
-                        <div id="btns-data">
-                            <button class="btn btn-danger" id="back">Назад</button>
-                            <input class="btn btn-success" type="submit" id="send" value="Отправить">
-                        </div>
-
-                    }
-                </div><br />
-
-                <div class="info-table">
-                    <table class="table">
-                        <tr id="command_column">
-                            <th class="item_command_column">№</th>
-                            <th class="item_command_column">Дата и время</th>
-                            <th class="item_command_column">Команда</th>
-                            <th class="item_command_column">Параметр 1</th>
-                            <th class="item_command_column">Параметр 2</th>
-                            <th class="item_command_column">Параметр 3</th> 
-                            <th class="item_command_column">Статус</th>
-                        </tr>
-                        @foreach (var item in Model.histories)
-                        {
-                            <tr>
-                                <td>@item.id</td>
-                                <td>@item.dataTime</td>
-                                <td>@item.command</td>
-                                <td>@item.param1</td>
-                                <td>@item.param2</td>
-                                <td>@item.param3</td> 
-                                <td>@item.status</td>
-                            </tr>
-                        } 
-                    </table>
-                </div>
-            </div>
-
-        </div> *@
-    </div>
+  
 
 </body>
 </html> 
